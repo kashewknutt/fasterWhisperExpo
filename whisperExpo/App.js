@@ -3,7 +3,7 @@ import { Button, Text, View } from 'react-native';
 import { Audio } from 'expo-av';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://127.0.0.1:8000';  // Replace YOUR_LOCAL_IP with your computer's IP address
+const BACKEND_URL = 'http://127.0.0.1:8980';  // Replace YOUR_LOCAL_IP with your computer's IP address
 
 export default function App() {
   const [recording, setRecording] = useState(null);
@@ -32,12 +32,18 @@ export default function App() {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
+    console.log('Recording URI:', uri);  // Log the URI of the recording
 
     const formData = new FormData();
     formData.append('file', {
       uri,
-      type: 'audio/m4a',
-      name: 'audio.m4a',
+      type: 'audio/m4a',  // Check if the type matches the recorded file
+      name: 'audio.m4a',  // Ensure that the name reflects the correct file extension
+    });
+
+    // Debug the formData contents
+    formData.forEach((value, key) => {
+        console.log(key, value);
     });
 
     try {
@@ -52,7 +58,8 @@ export default function App() {
       console.error('Error sending audio to backend', err);
       setError(`Error: ${err.message}. ${err.response?.data?.error || ''}`);
     }
-  }
+}
+
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
